@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aventura de Aprendizaje</title>
     <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
     <style>
@@ -12,34 +11,36 @@
     </style>
 </head>
 <body>
-
     <div id="loading-message">
         <h3>Cargando Aventura...</h3>
-        <p>Descargando archivos del juego (esto puede tardar 1 minuto)...</p>
+        <p>Iniciando motor Java. Por favor, espera un momento...</p>
     </div>
-
     <div id="cheerpj-container"></div>
 
     <script>
         async function iniciar() {
-            // Esperamos a que la librería cargue realmente
-            while (typeof cheerpjInit === 'undefined') {
-                await new Promise(r => setTimeout(r, 500));
+            // 1. Esperar a que el cargador esté disponible
+            if (typeof cheerpjInit === 'undefined') {
+                setTimeout(iniciar, 200);
+                return;
             }
 
-            // Inicializamos indicando el contenedor
-            await cheerpjInit({
-                display: document.getElementById("cheerpj-container")
-            });
+            // 2. Inicializar motor
+            await cheerpjInit();
             
+            // 3. Crear pantalla
             cheerpjCreateDisplay(1370, 720); 
             
-            // Usamos /app/ que es el estándar de CheerpJ para GitHub
-            // IMPORTANTE: Asegúrate de que JuegoMemorama.jar esté en la raíz de tu GitHub
-            cheerpjRunJar("/app/JuegoMemorama.jar", "/app/lib/AbsoluteLayout.jar").then(() => {
+            // 4. EJECUCIÓN (Usamos rutas directas sin el prefijo /app/ para probar)
+            // Asegúrate de que los nombres coincidan exactamente
+            cheerpjRunJar("./JuegoMemorama.jar", "./lib/AbsoluteLayout.jar").then(() => {
                 document.getElementById('loading-message').style.display = 'none';
             });
         }
+        iniciar();
+    </script>
+</body>
+</html>
         
         iniciar();
     </script>
