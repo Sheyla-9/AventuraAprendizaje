@@ -2,51 +2,46 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aventura de Aprendizaje</title>
-    
     <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
-    
     <style>
         body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
-        #cheerpj-container { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
-        canvas { max-width: 100% !important; max-height: 100% !important; object-fit: contain; }
-        #loading-message { position: absolute; text-align: center; z-index: 10; }
+        #cheerpj-container { width: 100vw; height: 100vh; }
+        #loading-message { position: absolute; text-align: center; }
     </style>
 </head>
 <body>
 
     <div id="loading-message">
         <h3>Cargando Aventura...</h3>
-        <p>Conectando con el motor Java (CheerpJ)...</p>
+        <p>Descargando archivos del juego (esto puede tardar 1 minuto)...</p>
     </div>
 
     <div id="cheerpj-container"></div>
 
     <script>
-    async function iniciarJuego() {
-        if (typeof cheerpjInit === 'undefined') {
-            setTimeout(iniciarJuego, 500);
-            return;
-        }
+        async function iniciar() {
+            // Esperamos a que la librería cargue realmente
+            while (typeof cheerpjInit === 'undefined') {
+                await new Promise(r => setTimeout(r, 500));
+            }
 
-        try {
+            // Inicializamos indicando el contenedor
             await cheerpjInit({
                 display: document.getElementById("cheerpj-container")
             });
             
             cheerpjCreateDisplay(1370, 720); 
             
-            // Usamos rutas relativas simples
-            // Esto buscará el JAR y la carpeta lib en el mismo lugar que el index.html
-            await cheerpjRunJar("./JuegoMemorama.jar", "./lib/AbsoluteLayout.jar");
-            
-            document.getElementById('loading-message').style.display = 'none';
-        } catch (error) {
-            console.error("Error:", error);
+            // Usamos /app/ que es el estándar de CheerpJ para GitHub
+            // IMPORTANTE: Asegúrate de que JuegoMemorama.jar esté en la raíz de tu GitHub
+            cheerpjRunJar("/app/JuegoMemorama.jar", "/app/lib/AbsoluteLayout.jar").then(() => {
+                document.getElementById('loading-message').style.display = 'none';
+            });
         }
-    }
-    window.onload = iniciarJuego;
-</script>
+        
+        iniciar();
+    </script>
 </body>
 </html>
