@@ -6,39 +6,50 @@
     <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
     <style>
         body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
-        #cheerpj-container { width: 100vw; height: 100vh; }
-        #loading-message { position: absolute; text-align: center; }
+        #cheerpj-container { width: 100vw; height: 100vh; position: relative; }
+        #loading-message { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 100; }
     </style>
 </head>
 <body>
+
     <div id="loading-message">
         <h3>Cargando Aventura...</h3>
         <p>Iniciando motor Java. Por favor, espera un momento...</p>
     </div>
+
     <div id="cheerpj-container"></div>
 
     <script>
-        // Esta función se ejecuta sola en cuanto carga la página
+        // Función de arranque inmediato
         (async function() {
-            // 1. Esperar a que CheerpJ esté en la memoria del navegador
-            while (typeof cheerpjInit === 'undefined') {
-                await new Promise(item => setTimeout(item, 200));
-            }
+            try {
+                console.log("Iniciando secuencia de carga...");
+                
+                // Esperar a que la librería esté lista
+                while (typeof cheerpjInit === 'undefined') {
+                    await new Promise(r => setTimeout(r, 100));
+                }
 
-            // 2. Inicializar motor
-            await cheerpjInit();
-            
-            // 3. Crear pantalla
-            cheerpjCreateDisplay(1370, 720); 
-            
-            // 4. Ejecutar el juego (Usando la ruta absoluta del servidor)
-            const urlJar = "https://sheyla-9.github.io/AventuraAprendizaje/JuegoMemorama.jar";
-            const urlLib = "https://sheyla-9.github.io/AventuraAprendizaje/lib/AbsoluteLayout.jar";
-            
-            cheerpjRunJar(urlJar, urlLib).then(() => {
+                // 1. Inicializar motor indicando el contenedor
+                await cheerpjInit({
+                    display: document.getElementById("cheerpj-container")
+                });
+                
+                // 2. Crear pantalla con tamaño original
+                cheerpjCreateDisplay(1370, 720); 
+                
+                // 3. Ejecutar el JAR principal y su librería
+                // Nota: Usamos rutas relativas que son las más estables en GitHub
+                await cheerpjRunJar("/app/JuegoMemorama.jar", "/app/lib/AbsoluteLayout.jar");
+                
+                // 4. Si llegamos aquí, ocultamos el mensaje
                 document.getElementById('loading-message').style.display = 'none';
-            });
-        })(); 
+                console.log("¡Carga completa!");
+
+            } catch (err) {
+                console.error("Error en el arranque:", err);
+            }
+        })();
     </script>
 </body>
 </html>
