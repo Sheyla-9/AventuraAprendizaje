@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Aventura de Aprendizaje</title>
+    
     <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
+    
     <style>
         body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
         #cheerpj-container { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
@@ -16,37 +18,44 @@
 
     <div id="loading-message">
         <h3>Cargando Aventura...</h3>
-        <p>Preparando librerías de Java (AbsoluteLayout)...</p>
+        <p>Conectando con el motor Java (CheerpJ)...</p>
     </div>
 
     <div id="cheerpj-container"></div>
 
     <script>
+        // Función principal
         async function iniciarJuego() {
-            // 1. Inicializar CheerpJ
-            await cheerpjInit({
-                display: document.getElementById("cheerpj-container")
-            });
-            
-            // 2. Crear el display con el tamaño de tu juego
-            cheerpjCreateDisplay(1370, 720); 
-            
-            // 3. EJECUTAR EL JUEGO
-            /* IMPORTANTE: Pasamos dos rutas en el cheerpjRunJar:
-               La primera es tu juego.
-               La segunda es la librería AbsoluteLayout que está dentro de la carpeta lib.
-            */
-            cheerpjRunJar("/app/JuegoMemorama.jar", "/app/lib/AbsoluteLayout.jar")
-            .then(() => {
+            // Verificamos si la librería ya cargó
+            if (typeof cheerpjInit === 'undefined') {
+                console.log("Esperando a que la librería cargue...");
+                setTimeout(iniciarJuego, 500); // Reintenta en medio segundo
+                return;
+            }
+
+            try {
+                // 1. Inicializar
+                await cheerpjInit({
+                    display: document.getElementById("cheerpj-container")
+                });
+                
+                // 2. Crear display
+                cheerpjCreateDisplay(1370, 720); 
+                
+                // 3. Ejecutar JAR con su librería de AbsoluteLayout
+                await cheerpjRunJar("/app/JuegoMemorama.jar", "/app/lib/AbsoluteLayout.jar");
+                
+                // Ocultar mensaje al terminar de cargar
                 document.getElementById('loading-message').style.display = 'none';
-                console.log("Juego iniciado correctamente");
-            })
-            .catch((err) => {
-                console.error("Error al cargar:", err);
-            });
+                console.log("¡Juego listo!");
+
+            } catch (error) {
+                console.error("Error al iniciar:", error);
+            }
         }
 
-        iniciarJuego();
+        // Ejecutar después de que la ventana cargue totalmente
+        window.onload = iniciarJuego;
     </script>
 </body>
 </html>
