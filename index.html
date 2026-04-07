@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Aventura de Aprendizaje</title>
-    <script src="https://cjrtnc.leaningtech.com/3.0/loader.js" crossorigin="anonymous"></script>
+    <script src="https://leancloud.leaningtech.com/3.0/loader.js"></script>
     <style>
         body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
         #game-container { width: 100vw; height: 100vh; }
@@ -18,34 +18,35 @@
     <div id="game-container"></div>
 
     <script>
-        // Esta es la forma más segura de arrancar en 2026
         window.addEventListener('load', async function() {
             try {
                 console.log("Paso 1: Ventana cargada.");
                 
+                // Pequeña espera para asegurar que el script se procese
+                await new Promise(r => setTimeout(r, 500));
+
                 if (typeof cheerpjInit === 'undefined') {
-                    document.getElementById("msg-detalle").innerText = "Error: No se pudo cargar la librería CheerpJ.";
+                    document.getElementById("msg-detalle").innerText = "Reintentando conexión con el motor...";
+                    // Si falla, intentamos cargar el motor manualmente
+                    let script = document.createElement('script');
+                    script.src = "https://cjrtnc.leaningtech.com/3.0/loader.js";
+                    document.head.appendChild(script);
                     return;
                 }
 
-                // 2. Iniciar motor
                 await cheerpjInit();
                 console.log("Paso 2: Motor inicializado.");
                 cheerpjCreateDisplay(1370, 720);
                 
-                // 3. Rutas directas
                 const jar = "https://sheyla-9.github.io/AventuraAprendizaje/JuegoMemorama.jar";
                 const lib = "https://sheyla-9.github.io/AventuraAprendizaje/lib/AbsoluteLayout.jar";
                 
-                console.log("Paso 3: Descargando JAR...");
                 await cheerpjRunJar(jar, lib);
-                
                 document.getElementById("status").style.display = "none";
-                console.log("Paso 4: ¡Juego listo!");
+                console.log("¡Juego listo!");
 
             } catch (err) {
                 console.error("Error crítico:", err);
-                document.getElementById("msg-detalle").innerText = "Hubo un problema al arrancar el motor.";
             }
         });
     </script>
