@@ -8,60 +8,68 @@
     <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
     
     <style>
-        /* Estilos básicos para centrar el juego y poner fondo negro */
-        body { margin: 0; padding: 0; background-color: #222; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif;}
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background-color: #222; 
+            overflow: hidden; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            color: white; 
+            font-family: sans-serif;
+        }
         
-        /* Contenedor principal que se adapta al celular */
         #cheerpj-container {
-            width: 100vw; /* 100% del ancho de la ventana */
-            height: 100vh; /* 100% del alto de la ventana */
+            width: 100vw; 
+            height: 100vh; 
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        /* MAGIA CSS: Escalamos el canvas que crea CheerpJ */
-        /* CheerpJ creará un elemento <canvas> dentro del contenedor */
+        /* Ajuste para que el juego se vea bien en el celular */
         canvas {
-            /* Forzamos a que el canvas no supere el ancho o alto de la pantalla del celular */
             max-width: 100% !important;
             max-height: 100% !important;
-            /* Mantenemos la proporción 1370:720 sin estirar la imagen */
             object-fit: contain; 
-            /* Añadimos una sombra para que se vea mejor */
             box-shadow: 0 0 20px rgba(0,0,0,0.7);
         }
         
-        #loading-message { position: absolute; text-align: center; }
+        #loading-message { 
+            position: absolute; 
+            text-align: center; 
+            z-index: 10;
+        }
     </style>
 </head>
 <body>
+
     <div id="loading-message">
         <h3>Cargando Aventura...</h3>
-        <p>Esto puede tardar unos segundos en datos móviles.</p>
+        <p>Esto puede tardar unos segundos mientras se prepara el entorno Java.</p>
     </div>
 
     <div id="cheerpj-container">
         </div>
 
     <script>
-        // Ocultar mensaje de carga cuando el juego esté listo
         function onGameReady() {
             document.getElementById('loading-message').style.display = 'none';
         }
 
-        // 1. Inicializar el entorno Java en el navegador
+        // 1. Inicializamos y le decimos en qué DIV debe mostrarse
         cheerpjInit({
-            // Puedes añadir parámetros de optimización aquí si es necesario
+            display: document.getElementById("cheerpj-container")
         });
         
-        // 2. Crear el display con TUS DIMENSIONES ORIGINALES.
-        // El CSS se encargará de encogerlo visualmente en el celular.
+        // 2. Definimos el tamaño lógico del juego (el original de tu proyecto Java)
         cheerpjCreateDisplay(1370, 720); 
         
-        // 3. Ejecutar tu archivo JAR (Asegúrate de que la ruta sea correcta)
-        // '/app/' es la ruta virtual que usa CheerpJ para tu repositorio
-        cheerpjRunJar("/app/JuegoMemorama.jar").then(onGameReady);
+        // 3. Ejecutamos el archivo JAR
+        // Usamos './' para asegurar que busque en la misma carpeta del index.html
+        cheerpjRunJar("./JuegoMemorama.jar").then(onGameReady);
     </script>
 </body>
 </html>
