@@ -11,40 +11,41 @@
     </style>
 </head>
 <body>
-
     <div id="loading-message">
         <h3>Cargando Aventura...</h3>
-        <p>Descargando componentes de Java. No cierres esta ventana.</p>
+        <p>Conectando con el servidor... Por favor, no recargues.</p>
     </div>
-
     <div id="cheerpj-container"></div>
 
     <script>
         (async function() {
             try {
-                // 1. Esperar a que la librería esté cargada en el navegador
+                // Esperar cargador
                 while (typeof cheerpjInit === 'undefined') {
                     await new Promise(r => setTimeout(r, 200));
                 }
 
-                // 2. Inicializar motor
-                await cheerpjInit();
+                // Inicializar indicando el contenedor
+                await cheerpjInit({
+                    display: document.getElementById("cheerpj-container")
+                });
                 
-                // 3. Crear display
                 cheerpjCreateDisplay(1370, 720); 
                 
-                // 4. EJECUCIÓN CON RUTA DIRECTA (Sin /app/)
-                // Esto obliga al navegador a buscar el archivo en tu carpeta de GitHub
-                console.log("Intentando descargar JuegoMemorama.jar...");
+                // USAMOS RUTA ABSOLUTA PARA EVITAR ERRORES DE CARPETA
+                const loc = window.location.href.split('index.html')[0];
+                const jarUrl = loc + "JuegoMemorama.jar";
+                const libUrl = loc + "lib/AbsoluteLayout.jar";
                 
-                await cheerpjRunJar("./JuegoMemorama.jar", "./lib/AbsoluteLayout.jar");
+                console.log("Descargando desde:", jarUrl);
                 
-                // Ocultar mensaje al éxito
+                // Ejecución
+                await cheerpjRunJar(jarUrl, libUrl);
+                
                 document.getElementById('loading-message').style.display = 'none';
-                console.log("¡Éxito! El juego debería ser visible ahora.");
 
             } catch (err) {
-                console.error("Error detectado:", err);
+                console.error("Fallo crítico:", err);
             }
         })();
     </script>
