@@ -24,38 +24,29 @@
     <div id="cheerpj-container"></div>
 
     <script>
-        // Función principal
-        async function iniciarJuego() {
-            // Verificamos si la librería ya cargó
-            if (typeof cheerpjInit === 'undefined') {
-                console.log("Esperando a que la librería cargue...");
-                setTimeout(iniciarJuego, 500); // Reintenta en medio segundo
-                return;
-            }
-
-            try {
-                // 1. Inicializar
-                await cheerpjInit({
-                    display: document.getElementById("cheerpj-container")
-                });
-                
-                // 2. Crear display
-                cheerpjCreateDisplay(1370, 720); 
-                
-                // 3. Ejecutar JAR con su librería de AbsoluteLayout
-                await cheerpjRunJar("/app/JuegoMemorama.jar", "/app/lib/AbsoluteLayout.jar");
-                
-                // Ocultar mensaje al terminar de cargar
-                document.getElementById('loading-message').style.display = 'none';
-                console.log("¡Juego listo!");
-
-            } catch (error) {
-                console.error("Error al iniciar:", error);
-            }
+    async function iniciarJuego() {
+        if (typeof cheerpjInit === 'undefined') {
+            setTimeout(iniciarJuego, 500);
+            return;
         }
 
-        // Ejecutar después de que la ventana cargue totalmente
-        window.onload = iniciarJuego;
-    </script>
+        try {
+            await cheerpjInit({
+                display: document.getElementById("cheerpj-container")
+            });
+            
+            cheerpjCreateDisplay(1370, 720); 
+            
+            // Usamos rutas relativas simples
+            // Esto buscará el JAR y la carpeta lib en el mismo lugar que el index.html
+            await cheerpjRunJar("./JuegoMemorama.jar", "./lib/AbsoluteLayout.jar");
+            
+            document.getElementById('loading-message').style.display = 'none';
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+    window.onload = iniciarJuego;
+</script>
 </body>
 </html>
