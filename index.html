@@ -3,73 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aventura de Aprendizaje - Versión Móvil</title>
-    
+    <title>Aventura de Aprendizaje</title>
     <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
-    
     <style>
-        body { 
-            margin: 0; 
-            padding: 0; 
-            background-color: #222; 
-            overflow: hidden; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            color: white; 
-            font-family: sans-serif;
-        }
-        
-        #cheerpj-container {
-            width: 100vw; 
-            height: 100vh; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Ajuste para que el juego se vea bien en el celular */
-        canvas {
-            max-width: 100% !important;
-            max-height: 100% !important;
-            object-fit: contain; 
-            box-shadow: 0 0 20px rgba(0,0,0,0.7);
-        }
-        
-        #loading-message { 
-            position: absolute; 
-            text-align: center; 
-            z-index: 10;
-        }
+        body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
+        #cheerpj-container { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        canvas { max-width: 100% !important; max-height: 100% !important; object-fit: contain; }
+        #loading-message { position: absolute; text-align: center; z-index: 10; }
     </style>
 </head>
 <body>
 
     <div id="loading-message">
         <h3>Cargando Aventura...</h3>
-        <p>Esto puede tardar unos segundos mientras se prepara el entorno Java.</p>
+        <p>Preparando librerías de Java (AbsoluteLayout)...</p>
     </div>
 
-    <div id="cheerpj-container">
-        </div>
+    <div id="cheerpj-container"></div>
 
     <script>
-        function onGameReady() {
-            document.getElementById('loading-message').style.display = 'none';
+        async function iniciarJuego() {
+            // 1. Inicializar CheerpJ
+            await cheerpjInit({
+                display: document.getElementById("cheerpj-container")
+            });
+            
+            // 2. Crear el display con el tamaño de tu juego
+            cheerpjCreateDisplay(1370, 720); 
+            
+            // 3. EJECUTAR EL JUEGO
+            /* IMPORTANTE: Pasamos dos rutas en el cheerpjRunJar:
+               La primera es tu juego.
+               La segunda es la librería AbsoluteLayout que está dentro de la carpeta lib.
+            */
+            cheerpjRunJar("/app/JuegoMemorama.jar", "/app/lib/AbsoluteLayout.jar")
+            .then(() => {
+                document.getElementById('loading-message').style.display = 'none';
+                console.log("Juego iniciado correctamente");
+            })
+            .catch((err) => {
+                console.error("Error al cargar:", err);
+            });
         }
 
-        // 1. Inicializamos y le decimos en qué DIV debe mostrarse
-        cheerpjInit({
-            display: document.getElementById("cheerpj-container")
-        });
-        
-        // 2. Definimos el tamaño lógico del juego (el original de tu proyecto Java)
-        cheerpjCreateDisplay(1370, 720); 
-        
-        // 3. Ejecutamos el archivo JAR
-        // Usamos './' para asegurar que busque en la misma carpeta del index.html
-        cheerpjRunJar("./JuegoMemorama.jar").then(onGameReady);
+        iniciarJuego();
     </script>
 </body>
 </html>
