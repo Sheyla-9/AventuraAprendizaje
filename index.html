@@ -3,45 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <title>Aventura de Aprendizaje</title>
-    <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
+    <script src="https://cjrtnc.leaningtech.com/3.0/loader.js" crossorigin="anonymous"></script>
     <style>
         body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
         #game-container { width: 100vw; height: 100vh; }
-        #status { position: absolute; text-align: center; }
+        #status { position: absolute; text-align: center; z-index: 100; }
     </style>
 </head>
 <body>
     <div id="status">
-        <h3>Iniciando Memorama...</h3>
-        <p>Si no carga, intenta presionar Ctrl + F5</p>
+        <h3 id="msg-titulo">Iniciando Memorama...</h3>
+        <p id="msg-detalle">Conectando con el motor de Java...</p>
     </div>
     <div id="game-container"></div>
 
     <script>
-        async function motor() {
-            // 1. Esperar a que la librería esté lista
-            if (typeof cheerpjInit === 'undefined') {
-                setTimeout(motor, 300);
-                return;
-            }
+        // Esta es la forma más segura de arrancar en 2026
+        window.addEventListener('load', async function() {
+            try {
+                console.log("Paso 1: Ventana cargada.");
+                
+                if (typeof cheerpjInit === 'undefined') {
+                    document.getElementById("msg-detalle").innerText = "Error: No se pudo cargar la librería CheerpJ.";
+                    return;
+                }
 
-            console.log("Motor detectado, arrancando...");
-            
-            // 2. Iniciar motor
-            await cheerpjInit();
-            cheerpjCreateDisplay(1370, 720);
-            
-            // 3. Ejecutar JAR (Usando la dirección completa para que no haya duda)
-            const jarPath = "https://sheyla-9.github.io/AventuraAprendizaje/JuegoMemorama.jar";
-            const libPath = "https://sheyla-9.github.io/AventuraAprendizaje/lib/AbsoluteLayout.jar";
-            
-            await cheerpjRunJar(jarPath, libPath);
-            
-            document.getElementById("status").style.display = "none";
-        }
-        
-        // Ejecutar inmediatamente
-        motor();
+                // 2. Iniciar motor
+                await cheerpjInit();
+                console.log("Paso 2: Motor inicializado.");
+                cheerpjCreateDisplay(1370, 720);
+                
+                // 3. Rutas directas
+                const jar = "https://sheyla-9.github.io/AventuraAprendizaje/JuegoMemorama.jar";
+                const lib = "https://sheyla-9.github.io/AventuraAprendizaje/lib/AbsoluteLayout.jar";
+                
+                console.log("Paso 3: Descargando JAR...");
+                await cheerpjRunJar(jar, lib);
+                
+                document.getElementById("status").style.display = "none";
+                console.log("Paso 4: ¡Juego listo!");
+
+            } catch (err) {
+                console.error("Error crítico:", err);
+                document.getElementById("msg-detalle").innerText = "Hubo un problema al arrancar el motor.";
+            }
+        });
     </script>
 </body>
 </html>
