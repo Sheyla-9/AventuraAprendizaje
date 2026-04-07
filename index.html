@@ -3,35 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <title>Aventura de Aprendizaje</title>
-    <script src="https://cjrtnc.leaningtech.com/2.0/loader.js"></script>
+    <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
     <style>
         body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
-        #cheerpj-container { width: 100vw; height: 100vh; }
-        #loading-message { position: absolute; text-align: center; z-index: 10; }
+        #cheerpj-container { width: 100vw; height: 100vh; position: relative; }
+        #loading-message { position: absolute; text-align: center; z-index: 100; }
     </style>
 </head>
 <body>
     <div id="loading-message">
         <h3>Cargando Aventura...</h3>
-        <p>Iniciando motor Java (v2.0)...</p>
+        <p>Accediendo a los archivos del juego...</p>
     </div>
     <div id="cheerpj-container"></div>
 
     <script>
-        // Función de arranque
-        window.onload = function() {
-            // 1. Inicializar
-            cheerpjInit();
-            
-            // 2. Crear pantalla
-            cheerpjCreateDisplay(1370, 720);
-            
-            // 3. Ejecutar (Ruta directa al archivo)
-            // Asegúrate que el nombre sea exacto: JuegoMemorama.jar
-            cheerpjRunJar("/app/JuegoMemorama.jar");
-            
-            console.log("Comando enviado");
-        };
+        (async function() {
+            try {
+                // 1. Esperar al motor
+                while (typeof cheerpjInit === 'undefined') {
+                    await new Promise(r => setTimeout(r, 200));
+                }
+
+                // 2. Inicializar
+                await cheerpjInit();
+                cheerpjCreateDisplay(1370, 720); 
+                
+                // 3. RUTA CORREGIDA MANUALMENTE
+                // Le indicamos que entre a la carpeta /AventuraAprendizaje/
+                const repo = "/AventuraAprendizaje/";
+                
+                console.log("Cargando desde la carpeta: " + repo);
+
+                // Ejecutamos el JAR y su librería con la ruta del repositorio
+                await cheerpjRunJar("/app" + repo + "JuegoMemorama.jar", "/app" + repo + "lib/AbsoluteLayout.jar");
+                
+                // 4. Éxito
+                document.getElementById('loading-message').style.display = 'none';
+                console.log("¡Juego cargado!");
+
+            } catch (err) {
+                console.error("Error al abrir el archivo:", err);
+            }
+        })();
     </script>
 </body>
 </html>
