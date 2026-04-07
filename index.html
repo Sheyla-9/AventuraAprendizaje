@@ -3,52 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <title>Aventura de Aprendizaje</title>
-    <script src="https://leancloud.leaningtech.com/3.0/loader.js"></script>
+    <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
     <style>
         body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
-        #game-container { width: 100vw; height: 100vh; }
-        #status { position: absolute; text-align: center; z-index: 100; }
+        #game-container { width: 100vw; height: 100vh; position: relative; }
+        #status { position: absolute; text-align: center; z-index: 100; padding: 20px; background: rgba(0,0,0,0.7); border-radius: 10px; }
     </style>
 </head>
 <body>
     <div id="status">
         <h3 id="msg-titulo">Iniciando Memorama...</h3>
-        <p id="msg-detalle">Conectando con el motor de Java...</p>
+        <p id="msg-detalle">Cargando motor de Java oficial...</p>
     </div>
     <div id="game-container"></div>
 
     <script>
-        window.addEventListener('load', async function() {
+        // Función de arranque con reintento automático
+        async function arrancarMotor() {
             try {
-                console.log("Paso 1: Ventana cargada.");
+                console.log("Paso 1: Iniciando carga...");
                 
-                // Pequeña espera para asegurar que el script se procese
-                await new Promise(r => setTimeout(r, 500));
-
+                // Si la librería falló por certificado, esto la reintenta una vez
                 if (typeof cheerpjInit === 'undefined') {
-                    document.getElementById("msg-detalle").innerText = "Reintentando conexión con el motor...";
-                    // Si falla, intentamos cargar el motor manualmente
-                    let script = document.createElement('script');
-                    script.src = "https://cjrtnc.leaningtech.com/3.0/loader.js";
-                    document.head.appendChild(script);
-                    return;
+                    console.log("Reintentando conexión...");
+                    await new Promise(r => setTimeout(r, 1000));
+                    if (typeof cheerpjInit === 'undefined') {
+                        document.getElementById("msg-detalle").innerText = "El motor está tardando en responder. Espera un momento...";
+                        return;
+                    }
                 }
 
+                // Inicializar
                 await cheerpjInit();
-                console.log("Paso 2: Motor inicializado.");
+                console.log("Paso 2: Motor listo.");
                 cheerpjCreateDisplay(1370, 720);
                 
                 const jar = "https://sheyla-9.github.io/AventuraAprendizaje/JuegoMemorama.jar";
                 const lib = "https://sheyla-9.github.io/AventuraAprendizaje/lib/AbsoluteLayout.jar";
                 
                 await cheerpjRunJar(jar, lib);
+                
                 document.getElementById("status").style.display = "none";
-                console.log("¡Juego listo!");
+                console.log("Paso 3: ¡Juego en pantalla!");
 
             } catch (err) {
-                console.error("Error crítico:", err);
+                console.error("Error en motor:", err);
             }
-        });
+        }
+
+        // Ejecutar al cargar la ventana
+        window.onload = arrancarMotor;
     </script>
 </body>
 </html>
