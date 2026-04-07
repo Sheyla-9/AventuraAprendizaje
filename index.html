@@ -3,51 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>Aventura de Aprendizaje</title>
-    <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
+    <script src="https://cjrtnc.leaningtech.com/2.0/loader.js"></script>
     <style>
         body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
-        #cheerpj-container { width: 100vw; height: 100vh; position: relative; }
-        #loading-message { position: absolute; text-align: center; z-index: 100; }
+        #cheerpj-container { width: 100vw; height: 100vh; }
+        #loading-message { position: absolute; text-align: center; z-index: 10; }
     </style>
 </head>
 <body>
     <div id="loading-message">
         <h3>Cargando Aventura...</h3>
-        <p>Conectando con el servidor... Por favor, no recargues.</p>
+        <p>Iniciando motor Java (v2.0)...</p>
     </div>
     <div id="cheerpj-container"></div>
 
     <script>
-        (async function() {
-            try {
-                // Esperar cargador
-                while (typeof cheerpjInit === 'undefined') {
-                    await new Promise(r => setTimeout(r, 200));
-                }
-
-                // Inicializar indicando el contenedor
-                await cheerpjInit({
-                    display: document.getElementById("cheerpj-container")
-                });
-                
-                cheerpjCreateDisplay(1370, 720); 
-                
-                // USAMOS RUTA ABSOLUTA PARA EVITAR ERRORES DE CARPETA
-                const loc = window.location.href.split('index.html')[0];
-                const jarUrl = loc + "JuegoMemorama.jar";
-                const libUrl = loc + "lib/AbsoluteLayout.jar";
-                
-                console.log("Descargando desde:", jarUrl);
-                
-                // Ejecución
-                await cheerpjRunJar(jarUrl, libUrl);
-                
-                document.getElementById('loading-message').style.display = 'none';
-
-            } catch (err) {
-                console.error("Fallo crítico:", err);
-            }
-        })();
+        // Función de arranque
+        window.onload = function() {
+            // 1. Inicializar
+            cheerpjInit();
+            
+            // 2. Crear pantalla
+            cheerpjCreateDisplay(1370, 720);
+            
+            // 3. Ejecutar (Ruta directa al archivo)
+            // Asegúrate que el nombre sea exacto: JuegoMemorama.jar
+            cheerpjRunJar("/app/JuegoMemorama.jar");
+            
+            console.log("Comando enviado");
+        };
     </script>
 </body>
 </html>
