@@ -7,59 +7,51 @@
     <style>
         body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
         #game-container { width: 100vw; height: 100vh; position: relative; }
-        #status { position: absolute; text-align: center; z-index: 100; background: rgba(0,0,0,0.85); padding: 30px; border-radius: 15px; border: 1px solid #444; }
+        #status { position: absolute; text-align: center; z-index: 100; background: rgba(0,0,0,0.9); padding: 30px; border-radius: 15px; border: 2px solid #555; }
     </style>
 </head>
 <body>
     <div id="status">
         <h3 id="titulo">Iniciando Memorama...</h3>
-        <p id="detalle">Cargando motor de Java oficial...</p>
+        <p id="detalle">Conectando con el motor de respaldo...</p>
     </div>
     <div id="game-container"></div>
 
     <script>
         async function arrancar() {
             try {
-                console.log("Paso 1: Verificando motor...");
-                
-                // Bucle de espera: preguntamos cada 500ms si el motor ya existe
+                // Si la librería falla, intentamos cargarla de nuevo dinámicamente
+                if (typeof cheerpjInit === 'undefined') {
+                    console.log("Reintentando carga de motor desde servidor alterno...");
+                    const script = document.createElement('script');
+                    script.src = "https://cjrtnc.leaningtech.com/loader.js"; 
+                    document.head.appendChild(script);
+                }
+
                 let intentos = 0;
                 while (typeof cheerpjInit === 'undefined') {
                     intentos++;
-                    console.log("Esperando librería... (intento " + intentos + ")");
-                    document.getElementById("detalle").innerText = "Conectando con el servidor de Java (intento " + intentos + ")...";
-                    await new Promise(r => setTimeout(r, 800));
-                    
-                    if (intentos > 20) { // Si pasa mucho tiempo, forzamos recarga manual
-                        document.getElementById("detalle").innerText = "El servidor tarda en responder. Por favor, presiona Ctrl+F5.";
-                        return;
-                    }
+                    document.getElementById("detalle").innerText = "Sincronizando con Java (intento " + intentos + ")...";
+                    await new Promise(r => setTimeout(r, 1000));
+                    if (intentos > 15) break;
                 }
 
-                console.log("¡Motor detectado y listo!");
-                document.getElementById("detalle").innerText = "Motor listo. Cargando gráficos del juego...";
-
-                // Paso 2: Inicializar ahora que estamos SEGUROS que existe
                 await cheerpjInit();
                 cheerpjCreateDisplay(1370, 720);
                 
-                // Paso 3: Ejecutar JAR con rutas completas
-                const jar = "https://sheyla-9.github.io/AventuraAprendizaje/JuegoMemorama.jar";
-                const lib = "https://sheyla-9.github.io/AventuraAprendizaje/lib/AbsoluteLayout.jar";
+                // Forzamos la ruta del JAR para que no use la caché vieja
+                const cacheBuster = "?v=" + new Date().getTime();
+                const jar = "https://sheyla-9.github.io/AventuraAprendizaje/JuegoMemorama.jar" + cacheBuster;
+                const lib = "https://sheyla-9.github.io/AventuraAprendizaje/lib/AbsoluteLayout.jar" + cacheBuster;
                 
-                console.log("Llamando al archivo JAR...");
                 await cheerpjRunJar(jar, lib);
-                
                 document.getElementById("status").style.display = "none";
-                console.log("¡Aplicación iniciada con éxito!");
 
             } catch (err) {
-                console.error("Error en la secuencia:", err);
-                document.getElementById("detalle").innerText = "Error: " + err.message;
+                console.error("Error:", err);
+                document.getElementById("detalle").innerText = "Error de conexión. Intenta en 1 minuto.";
             }
         }
-
-        // Arrancamos la secuencia
         arrancar();
     </script>
 </body>
