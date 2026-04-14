@@ -7,21 +7,38 @@
     <style>
         body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
         #game-container { width: 100vw; height: 100vh; }
+        #status { position: absolute; text-align: center; z-index: 100; background: rgba(0,0,0,0.8); padding: 20px; border-radius: 10px; border: 1px solid #555; }
     </style>
 </head>
 <body>
+    <div id="status">
+        <h3 id="titulo">Iniciando Memorama...</h3>
+        <p id="msg">Saltando bloqueos de seguridad...</p>
+    </div>
     <div id="game-container"></div>
+
     <script>
         window.onload = function() {
-            cheerpjInit();
+            // 1. Inicializar con parámetros de compatibilidad
+            cheerpjInit({ 
+                enablevfs: true,
+                javaProperties: ["java.library.path=/app/AventuraAprendizaje/lib"] 
+            });
             cheerpjCreateDisplay(1370, 720);
             
-            // Si el JAR ya bajó (como vimos en tu captura), 
-            // solo necesitamos apuntar a la clase EXACTA.
-            // Probaremos la ruta completa del paquete:
+            // 2. Ruta directa
+            const jarPath = "/app/AventuraAprendizaje/JuegoMemorama.jar";
             
-            console.log("Iniciando clase principal...");
-           cheerpjRunJar("/app/AventuraAprendizaje/JuegoMemorama.jar");
+            console.log("Cargando JAR...");
+            document.getElementById("msg").innerText = "Abriendo ventana principal...";
+
+            // 3. Ejecución directa
+            cheerpjRunJar(jarPath);
+            
+            // Ocultar mensaje de carga
+            setTimeout(() => {
+                document.getElementById("status").style.display = "none";
+            }, 10000);
         };
     </script>
 </body>
