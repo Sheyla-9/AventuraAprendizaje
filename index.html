@@ -3,61 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <title>Aventura de Aprendizaje</title>
-   <script src="https://cjrtnc.leaningtech.com/3.0/loader.js" defer></script>
+    <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
     <style>
         body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
         #game-container { width: 100vw; height: 100vh; position: relative; }
-        #status { position: absolute; text-align: center; z-index: 100; padding: 20px; background: rgba(0,0,0,0.8); border-radius: 10px; border: 1px solid #444; }
+        #status { position: absolute; text-align: center; z-index: 100; background: rgba(0,0,0,0.8); padding: 20px; border-radius: 10px; }
     </style>
 </head>
 <body>
     <div id="status">
-        <h3>Iniciando Memorama...</h3>
-        <p id="msg">Cargando motor de Java...</p>
+        <h3 id="titulo">Iniciando Memorama...</h3>
+        <p id="detalle">Conectando con el motor de Java...</p>
     </div>
     <div id="game-container"></div>
 
     <script>
-        // Función principal autoejecutable
-        (async function() {
-    try {
-        console.log("Esperando a CheerpJ...");
-        
-        // Si después de 3 segundos no despierta, lo llamamos con fuerza
-        const timeout = setTimeout(() => {
-            console.log("El motor tarda en despertar, reintentando...");
-            const s = document.createElement('script');
-            s.src = "https://cjrtnc.leaningtech.com/3.0/loader.js";
-            document.head.appendChild(s);
-        }, 3000);
+        async function arrancar() {
+            try {
+                // Paso 1: Forzar la detección de la librería
+                if (typeof cheerpjInit === 'undefined') {
+                    console.log("Librería no encontrada, cargando manualmente...");
+                    await new Promise((resolve) => {
+                        const s = document.createElement('script');
+                        s.src = "https://cjrtnc.leaningtech.com/3.0/loader.js";
+                        s.onload = resolve;
+                        document.head.appendChild(s);
+                    });
+                }
 
-        while (typeof cheerpjInit === 'undefined') {
-            await new Promise(r => setTimeout(r, 500));
-        }
-        
-        clearTimeout(timeout); // Si despertó, cancelamos el reintento
-        console.log("Motor encontrado. Inicializando...");
+                console.log("¡Motor detectado!");
+                document.getElementById("detalle").innerText = "Motor listo. Cargando juego...";
 
-                // 1. Inicializar
+                // Paso 2: Inicializar
                 await cheerpjInit();
                 cheerpjCreateDisplay(1370, 720);
                 
-                // 2. Ejecutar JAR (Rutas completas)
+                // Paso 3: Ejecutar JAR
+                // Usamos la ruta completa de tu GitHub para que no haya duda
                 const jar = "https://sheyla-9.github.io/AventuraAprendizaje/JuegoMemorama.jar";
                 const lib = "https://sheyla-9.github.io/AventuraAprendizaje/lib/AbsoluteLayout.jar";
                 
-                console.log("Llamando al archivo JAR...");
                 await cheerpjRunJar(jar, lib);
                 
-                // 3. Finalizar
                 document.getElementById("status").style.display = "none";
-                console.log("¡Proceso completado!");
+                console.log("¡Juego iniciado!");
 
             } catch (err) {
-                console.error("Error en el arranque:", err);
-                document.getElementById("msg").innerText = "Error al iniciar. Revisa la consola (F12).";
+                console.error("Error crítico:", err);
+                document.getElementById("detalle").innerText = "Error al conectar. Reintenta con Ctrl+F5";
             }
-        })();
+        }
+
+        // Arrancamos después de 1 segundo para dejar que el navegador respire
+        setTimeout(arrancar, 1000);
     </script>
 </body>
 </html>
