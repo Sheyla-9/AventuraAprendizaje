@@ -5,39 +5,89 @@
     <title>Aventura de Aprendizaje</title>
     <script src="https://cjrtnc.leaningtech.com/2.0/loader.js"></script>
     <style>
-        body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
-        #game-container { width: 100vw; height: 100vh; position: relative; }
-        #status { position: absolute; text-align: center; z-index: 100; background: rgba(0,0,0,0.85); padding: 30px; border-radius: 15px; border: 1px solid #444; }
+        body { 
+            margin: 0; 
+            background-color: #222; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            color: white; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            overflow: hidden; 
+        }
+        #game-container { 
+            width: 100vw; 
+            height: 100vh; 
+            position: relative; 
+        }
+        #status { 
+            position: absolute; 
+            text-align: center; 
+            z-index: 100; 
+            background: rgba(0,0,0,0.85); 
+            padding: 30px; 
+            border-radius: 15px; 
+            border: 1px solid #444;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .loader-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: #fff;
+            border-radius: 50%;
+            margin-left: 5px;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.2; }
+            50% { opacity: 1; }
+            100% { opacity: 0.2; }
+        }
     </style>
 </head>
 <body>
+
     <div id="status">
-        <h3 id="titulo">Iniciando Memorama...</h3>
-        <p id="detalle">Cargando componentes de Java...</p>
+        <h2 id="titulo">Aventura de Aprendizaje</h2>
+        <p id="detalle">Iniciando motor Java de CheerpJ...</p>
+        <div class="loader-dot"></div>
+        <div class="loader-dot" style="animation-delay: 0.2s"></div>
+        <div class="loader-dot" style="animation-delay: 0.4s"></div>
     </div>
+
     <div id="game-container"></div>
 
     <script>
         window.onload = function() {
-            // 1. Inicialización
+            console.log("Iniciando secuencia de arranque...");
+            
+            // 1. Inicializar el motor gráfico
             cheerpjInit();
             cheerpjCreateDisplay(1370, 720);
             
-            // 2. Rutas Absolutas (Basadas en tu estructura de GitHub)
+            // 2. Definir las rutas de tus archivos
+            // Usamos la carpeta del repositorio AventuraAprendizaje
             const jarPath = "/app/AventuraAprendizaje/JuegoMemorama.jar";
             const libPath = "/app/AventuraAprendizaje/lib/AbsoluteLayout.jar";
             
-            console.log("Ejecutando clase: juegomemorama.INICIO");
-            document.getElementById("detalle").innerText = "Abriendo ventana principal...";
+            console.log("Ruta del JAR: " + jarPath);
+            document.getElementById("detalle").innerText = "Cargando clase juegomemorama.INICIO...";
 
-            // 3. Ejecución Directa
-            // Esta línea coincide exactamente con lo que vimos en tu WinRAR
+            // 3. Ejecutar la clase principal que vimos en WinRAR
+            // Nota: El orden es (ClasePrincipal, ArchivoJAR, ArchivoLib)
             cheerpjRunMain("juegomemorama.INICIO", jarPath, libPath);
             
-            // Ocultamos el mensaje después de que el motor termine de procesar
+            // 4. Ocultar el mensaje después de que el motor cargue
+            // Le damos 12 segundos para asegurar que se dibujen las imágenes
             setTimeout(() => {
-                document.getElementById("status").style.display = "none";
-            }, 8000);
+                const statusDiv = document.getElementById("status");
+                statusDiv.style.transition = "opacity 1s";
+                statusDiv.style.opacity = "0";
+                setTimeout(() => statusDiv.style.display = "none", 1000);
+                console.log("Secuencia de carga finalizada.");
+            }, 12000);
         };
     </script>
 </body>
