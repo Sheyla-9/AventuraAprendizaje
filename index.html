@@ -4,34 +4,15 @@
     <meta charset="UTF-8">
     <title>Aventura de Aprendizaje</title>
     <script src="https://cjrtnc.leaningtech.com/2.0/loader.js"></script>
-    <style>
-        body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; }
-        #status { position: absolute; text-align: center; z-index: 100; background: rgba(0,0,0,0.8); padding: 20px; border-radius: 10px; }
-    </style>
 </head>
-<body>
-    <div id="status">
-        <h3>Cargando Memorama...</h3>
-        <p id="msg">Iniciando motor de autodetectcción...</p>
-    </div>
+<body style="margin: 0; background: #222; color: white; display: flex; justify-content: center; align-items: center; height: 100vh;">
     <div id="game-container"></div>
-
     <script>
         window.onload = function() {
             cheerpjInit();
             cheerpjCreateDisplay(1370, 720);
-            
-            // Usamos la ruta del archivo que ya sabemos que el servidor encuentra (200)
-            const jarPath = "/app/AventuraAprendizaje/juego.jar";
-            
-            console.log("Intentando carga automática del JAR...");
-
-            // Esta función busca sola la clase principal (Main-Class)
-            cheerpjRunJar(jarPath);
-            
-            setTimeout(() => {
-                document.getElementById("status").style.display = "none";
-            }, 10000);
+            // Intentamos correrlo directamente ahora que el archivo será nuevo y válido
+            cheerpjRunMain("juegomemorama.INICIO", "/app/AventuraAprendizaje/juego.jar", "/app/AventuraAprendizaje/lib/AbsoluteLayout.jar");
         };
     </script>
 </body>
