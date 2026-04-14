@@ -5,85 +5,47 @@
     <title>Aventura de Aprendizaje</title>
     <script src="https://cjrtnc.leaningtech.com/2.0/loader.js"></script>
     <style>
-        body { 
-            margin: 0; 
-            background-color: #222; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            color: white; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            overflow: hidden; 
-        }
-        #game-container { 
-            width: 100vw; 
-            height: 100vh; 
-            position: relative; 
-        }
-        #status { 
-            position: absolute; 
-            text-align: center; 
-            z-index: 100; 
-            background: rgba(0,0,0,0.85); 
-            padding: 30px; 
-            border-radius: 15px; 
-            border: 1px solid #444;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-        .loader-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background-color: #fff;
-            border-radius: 50%;
-            margin-left: 5px;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { opacity: 0.2; }
-            50% { opacity: 1; }
-            100% { opacity: 0.2; }
-        }
+        body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
+        #game-container { width: 100vw; height: 100vh; position: relative; }
+        #status { position: absolute; text-align: center; z-index: 100; background: rgba(0,0,0,0.9); padding: 25px; border-radius: 15px; border: 1px solid #444; }
     </style>
 </head>
 <body>
-
     <div id="status">
-        <h2 id="titulo">Aventura de Aprendizaje</h2>
-        <p id="detalle">Iniciando motor Java de CheerpJ...</p>
-        <div class="loader-dot"></div>
-        <div class="loader-dot" style="animation-delay: 0.2s"></div>
-        <div class="loader-dot" style="animation-delay: 0.4s"></div>
+        <h3>Cargando Memorama...</h3>
+        <p id="msg">Sincronizando archivos del juego...</p>
     </div>
-
     <div id="game-container"></div>
 
-   <script>
-    window.onload = function() {
-        console.log("Iniciando secuencia de arranque...");
-        
-        // 1. Inicializar el motor
-        cheerpjInit();
-        cheerpjCreateDisplay(1370, 720);
-        
-        // 2. Rutas corregidas
-        // IMPORTANTE: Eliminamos cualquier ambigüedad de nombres
-        const jarPath = "/app/AventuraAprendizaje/JuegoMemorama.jar";
-        const libPath = "/app/AventuraAprendizaje/lib/AbsoluteLayout.jar";
-        
-        console.log("Cargando JAR desde: " + jarPath);
+    <script>
+        window.onload = async function() {
+            // 1. Inicializar motor
+            await cheerpjInit();
+            cheerpjCreateDisplay(1370, 720);
+            
+            console.log("Motor listo. Montando sistema de archivos...");
+            
+            // 2. Definimos las rutas exactas
+            const repoPath = "/AventuraAprendizaje/";
+            const jarFile = "JuegoMemorama.jar";
+            const libFile = "lib/AbsoluteLayout.jar";
 
-        // 3. Ejecución directa de la clase principal que confirmamos en WinRAR
-        // Usamos RunMain porque es más preciso que RunJar para proyectos de NetBeans
-        cheerpjRunMain("juegomemorama.INICIO", jarPath, libPath);
-        
-        // Ocultar mensaje de carga
-        setTimeout(() => {
-            const statusDiv = document.getElementById("status");
-            if(statusDiv) statusDiv.style.display = "none";
-        }, 15000); // Damos 15 segundos por la conexión de Campeche
-    };
-</script>
+            // 3. EJECUCIÓN ESPECIAL:
+            // Usamos una ruta que CheerpJ entiende como "raíz del servidor"
+            // Esto evita que el motor agregue el molesto ".js" al final
+            document.getElementById("msg").innerText = "Abriendo ventana INICIO...";
+            
+            cheerpjRunMain(
+                "juegomemorama.INICIO", 
+                "/app" + repoPath + jarFile, 
+                "/app" + repoPath + libFile
+            );
+
+            // Ocultar el mensaje tras la carga
+            setTimeout(() => {
+                document.getElementById("status").style.display = "none";
+            }, 10000);
+        };
+    </script>
 </body>
 </html>
