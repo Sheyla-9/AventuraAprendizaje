@@ -5,48 +5,36 @@
     <title>Aventura de Aprendizaje</title>
     <script src="https://cjrtnc.leaningtech.com/2.0/loader.js"></script>
     <style>
-        body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
-        #status { position: absolute; text-align: center; z-index: 100; background: rgba(0,0,0,0.9); padding: 20px; border-radius: 10px; border: 1px solid #444; }
+        body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; }
+        #status { text-align: center; background: rgba(0,0,0,0.8); padding: 25px; border-radius: 15px; border: 1px solid #444; }
     </style>
 </head>
 <body>
     <div id="status">
-        <h3 id="msg">Iniciando Memorama...</h3>
-        <p>Probando configuraciones de Java...</p>
+        <h3 id="titulo">Aventura de Aprendizaje</h3>
+        <p id="msg">Cargando juego.jar...</p>
     </div>
     <div id="game-container"></div>
 
     <script>
         window.onload = function() {
+            // Inicializar motor
             cheerpjInit();
             cheerpjCreateDisplay(1370, 720);
             
-            const jar = "/app/AventuraAprendizaje/JuegoMemorama.jar";
+            // RUTAS ACTUALIZADAS
+            const jar = "/app/AventuraAprendizaje/juego.jar";
             const lib = "/app/AventuraAprendizaje/lib/AbsoluteLayout.jar";
 
-            // INTENTO A: Todo minúsculas el paquete, Mayúsculas la clase
-            console.log("Probando A: juegomemorama.INICIO");
+            console.log("Iniciando desde el nuevo archivo: juego.jar");
+            
+            // Ejecutamos la clase que vimos en tu WinRAR
             cheerpjRunMain("juegomemorama.INICIO", jar, lib);
 
-            // INTENTO B: Paquete con Camello, Clase normal (Muy común en NetBeans)
+            // Ocultar mensaje cuando el logo de CheerpJ termine
             setTimeout(() => {
-                console.log("Probando B: JuegoMemorama.INICIO");
-                cheerpjRunMain("JuegoMemorama.INICIO", jar, lib);
-            }, 3000);
-
-            // INTENTO C: Clase sin paquete (Por si el JAR se exportó plano)
-            setTimeout(() => {
-                console.log("Probando C: INICIO");
-                cheerpjRunMain("INICIO", jar, lib);
-            }, 6000);
-            
-            // INTENTO D: Ejecución por Manifiesto (El motor decide)
-            setTimeout(() => {
-                console.log("Probando D: Carga automática por JAR");
-                cheerpjRunJar(jar);
-            }, 9000);
-
-            setTimeout(() => { document.getElementById("status").style.display = "none"; }, 12000);
+                document.getElementById("status").style.display = "none";
+            }, 12000);
         };
     </script>
 </body>
