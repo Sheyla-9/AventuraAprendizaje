@@ -6,35 +6,32 @@
     <script src="https://cjrtnc.leaningtech.com/2.0/loader.js"></script>
     <style>
         body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; }
-        #status { text-align: center; background: rgba(0,0,0,0.8); padding: 25px; border-radius: 15px; border: 1px solid #444; }
+        #status { position: absolute; text-align: center; z-index: 100; background: rgba(0,0,0,0.8); padding: 20px; border-radius: 10px; }
     </style>
 </head>
 <body>
     <div id="status">
-        <h3 id="titulo">Aventura de Aprendizaje</h3>
-        <p id="msg">Cargando juego.jar...</p>
+        <h3>Cargando Memorama...</h3>
+        <p id="msg">Iniciando motor de autodetectcción...</p>
     </div>
     <div id="game-container"></div>
 
     <script>
         window.onload = function() {
-            // Inicializar motor
             cheerpjInit();
             cheerpjCreateDisplay(1370, 720);
             
-            // RUTAS ACTUALIZADAS
-            const jar = "/app/AventuraAprendizaje/juego.jar";
-            const lib = "/app/AventuraAprendizaje/lib/AbsoluteLayout.jar";
-
-            console.log("Iniciando desde el nuevo archivo: juego.jar");
+            // Usamos la ruta del archivo que ya sabemos que el servidor encuentra (200)
+            const jarPath = "/app/AventuraAprendizaje/juego.jar";
             
-            // Ejecutamos la clase que vimos en tu WinRAR
-            cheerpjRunMain("juegomemorama.INICIO", jar, lib);
+            console.log("Intentando carga automática del JAR...");
 
-            // Ocultar mensaje cuando el logo de CheerpJ termine
+            // Esta función busca sola la clase principal (Main-Class)
+            cheerpjRunJar(jarPath);
+            
             setTimeout(() => {
                 document.getElementById("status").style.display = "none";
-            }, 12000);
+            }, 10000);
         };
     </script>
 </body>
