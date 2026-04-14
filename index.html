@@ -12,28 +12,36 @@
 </head>
 <body>
     <div id="status">
-        <h3>Cargando Memorama...</h3>
-        <p>El juego aparecerá en unos segundos.</p>
+        <h3>Cargando Aventura de Aprendizaje...</h3>
+        <p id="msg">Iniciando motor Java...</p>
     </div>
     <div id="game-container"></div>
 
     <script>
         window.onload = function() {
-            // Inicializamos el motor
+            // 1. Inicializar motor
             cheerpjInit();
             cheerpjCreateDisplay(1370, 720);
             
-            // USAMOS RUTAS RELATIVAS (./)
-            // Esto le dice: "busca en esta misma carpeta"
-            console.log("Iniciando descarga del JAR...");
+            // 2. Detectar la ruta actual automáticamente
+            // Esto evita el error 404 al buscar en la raíz
+            const path = window.location.pathname;
+            const jarPath = "/app" + path + "JuegoMemorama.jar";
+            const libPath = "/app" + path + "lib/AbsoluteLayout.jar";
             
-            cheerpjRunJar("./JuegoMemorama.jar", "./lib/AbsoluteLayout.jar").then(() => {
-                // Ocultamos el mensaje cuando el JAR responda
-                setTimeout(() => {
-                    document.getElementById("status").style.display = "none";
-                }, 5000);
-            });
+            console.log("Intentando cargar desde: " + jarPath);
+            document.getElementById("msg").innerText = "Buscando archivos del juego...";
+
+            // 3. Ejecutar con manejo de errores para evitar el fallo de 'then'
+            cheerpjRunJar(jarPath, libPath);
+            
+            // Ocultamos el mensaje tras un tiempo prudente de carga
+            setTimeout(() => {
+                document.getElementById("status").style.display = "none";
+            }, 10000);
         };
     </script>
+</body>
+</html>
 </body>
 </html>
