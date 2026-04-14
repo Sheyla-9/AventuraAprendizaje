@@ -6,42 +6,25 @@
     <script src="https://cjrtnc.leaningtech.com/2.0/loader.js"></script>
     <style>
         body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
-        #game-container { width: 100vw; height: 100vh; position: relative; }
-        #status { position: absolute; text-align: center; z-index: 100; background: rgba(0,0,0,0.8); padding: 20px; border-radius: 10px; }
+        #game-container { width: 100vw; height: 100vh; }
     </style>
 </head>
 <body>
-    <div id="status">
-        <h3>Cargando Aventura de Aprendizaje...</h3>
-        <p id="msg">Iniciando motor Java...</p>
-    </div>
     <div id="game-container"></div>
 
     <script>
         window.onload = function() {
-            // 1. Inicializar motor
             cheerpjInit();
             cheerpjCreateDisplay(1370, 720);
             
-            // 2. Detectar la ruta actual automáticamente
-            // Esto evita el error 404 al buscar en la raíz
-            const path = window.location.pathname;
-            const jarPath = "/app" + path + "JuegoMemorama.jar";
-            const libPath = "/app" + path + "lib/AbsoluteLayout.jar";
+            // Intentamos ejecutar llamando directamente a la clase principal
+            // He corregido la ruta del JAR para que sea exacta a tu repositorio
+            const jarPath = "/app/AventuraAprendizaje/JuegoMemorama.jar";
+            const libPath = "/app/AventuraAprendizaje/lib/AbsoluteLayout.jar";
             
-            console.log("Intentando cargar desde: " + jarPath);
-            document.getElementById("msg").innerText = "Buscando archivos del juego...";
-
-            // 3. Ejecutar con manejo de errores para evitar el fallo de 'then'
-            cheerpjRunJar(jarPath, libPath);
-            
-            // Ocultamos el mensaje tras un tiempo prudente de carga
-            setTimeout(() => {
-                document.getElementById("status").style.display = "none";
-            }, 10000);
+            // PRUEBA 1: Si tu paquete se llama 'juegomemorama' y la clase 'INICIO'
+            cheerpjRunMain("juegomemorama.INICIO", jarPath, libPath);
         };
     </script>
-</body>
-</html>
 </body>
 </html>
