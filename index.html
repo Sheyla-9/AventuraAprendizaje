@@ -6,46 +6,34 @@
     <script src="https://cjrtnc.leaningtech.com/2.0/loader.js"></script>
     <style>
         body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
-        #game-container { width: 100vw; height: 100vh; }
-        #status { position: absolute; text-align: center; z-index: 100; background: rgba(0,0,0,0.9); padding: 30px; border-radius: 15px; border: 2px solid #ff4444; }
+        #game-container { width: 100vw; height: 100vh; position: relative; }
+        #status { position: absolute; text-align: center; z-index: 100; background: rgba(0,0,0,0.8); padding: 20px; border-radius: 10px; }
     </style>
 </head>
 <body>
     <div id="status">
-        <h3 id="titulo">Iniciando Memorama...</h3>
-        <p id="detalle">Conectando con el servidor de respaldo (v2)...</p>
+        <h3>Cargando Memorama...</h3>
+        <p>El juego aparecerá en unos segundos.</p>
     </div>
     <div id="game-container"></div>
 
     <script>
         window.onload = function() {
-            console.log("Página cargada. Verificando motor...");
-            
-            // Si la v2.0 carga, iniciamos de inmediato
-            if (typeof cheerpjInit !== 'undefined') {
-                iniciarJuego();
-            } else {
-                // Si falla, intentamos cargar la v3.0 dinámicamente como último recurso
-                console.log("v2 falló, intentando v3...");
-                var s = document.createElement('script');
-                s.src = "https://cjrtnc.leaningtech.com/3.0/loader.js";
-                s.onload = iniciarJuego;
-                document.head.appendChild(s);
-            }
-        };
-
-        function iniciarJuego() {
-            document.getElementById("detalle").innerText = "Motor encontrado. Cargando JAR...";
+            // Inicializamos el motor
             cheerpjInit();
             cheerpjCreateDisplay(1370, 720);
             
-            // Usamos rutas relativas para evitar problemas de dominio
-            cheerpjRunJar("/app/JuegoMemorama.jar", "/app/lib/AbsoluteLayout.jar");
+            // USAMOS RUTAS RELATIVAS (./)
+            // Esto le dice: "busca en esta misma carpeta"
+            console.log("Iniciando descarga del JAR...");
             
-            setTimeout(function() {
-                document.getElementById("status").style.display = "none";
-            }, 8000);
-        }
+            cheerpjRunJar("./JuegoMemorama.jar", "./lib/AbsoluteLayout.jar").then(() => {
+                // Ocultamos el mensaje cuando el JAR responda
+                setTimeout(() => {
+                    document.getElementById("status").style.display = "none";
+                }, 5000);
+            });
+        };
     </script>
 </body>
 </html>
