@@ -6,39 +6,46 @@
     <script src="https://cjrtnc.leaningtech.com/2.0/loader.js"></script>
     <style>
         body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
-        #game-container { width: 100vw; height: 100vh; }
-        #status { position: absolute; text-align: center; z-index: 100; background: rgba(0,0,0,0.8); padding: 20px; border-radius: 10px; border: 1px solid #555; }
+        #game-container { width: 100vw; height: 100vh; position: relative; }
+        #status { position: absolute; text-align: center; z-index: 100; background: rgba(0,0,0,0.9); padding: 25px; border-radius: 15px; border: 1px solid #444; }
     </style>
 </head>
 <body>
     <div id="status">
         <h3 id="titulo">Iniciando Memorama...</h3>
-        <p id="msg">Saltando bloqueos de seguridad...</p>
+        <p id="msg">Preparando entorno virtual de Java...</p>
     </div>
     <div id="game-container"></div>
 
     <script>
-        window.onload = function() {
-            // 1. Inicializar con parámetros de compatibilidad
-            cheerpjInit({ 
-                enablevfs: true,
-                javaProperties: ["java.library.path=/app/AventuraAprendizaje/lib"] 
-            });
+        window.onload = async function() {
+            // 1. Inicializar con sistema de archivos habilitado
+            await cheerpjInit({ enablevfs: true });
             cheerpjCreateDisplay(1370, 720);
             
-            // 2. Ruta directa
-            const jarPath = "/app/AventuraAprendizaje/JuegoMemorama.jar";
+            console.log("Motor listo. Montando JAR...");
             
-            console.log("Cargando JAR...");
-            document.getElementById("msg").innerText = "Abriendo ventana principal...";
+            // 2. Definimos la ubicación exacta en el servidor de GitHub
+            const repo = "/AventuraAprendizaje/";
+            const jar = "JuegoMemorama.jar";
+            const lib = "lib/AbsoluteLayout.jar";
 
-            // 3. Ejecución directa
-            cheerpjRunJar(jarPath);
+            // 3. EJECUCIÓN CON PRIORIDAD DE CLASE
+            // Forzamos al motor a entrar a la carpeta del paquete que vimos en tu WinRAR
+            document.getElementById("msg").innerText = "Abriendo juegomemorama.INICIO...";
             
-            // Ocultar mensaje de carga
+            try {
+                // Intentamos la carga directa usando el sistema de archivos virtual (/app/)
+                await cheerpjRunMain("juegomemorama.INICIO", "/app" + repo + jar, "/app" + repo + lib);
+            } catch (e) {
+                console.log("Reintentando modo alterno...");
+                cheerpjRunJar("/app" + repo + jar);
+            }
+
+            // Ocultar mensaje tras 12 segundos
             setTimeout(() => {
                 document.getElementById("status").style.display = "none";
-            }, 10000);
+            }, 12000);
         };
     </script>
 </body>
