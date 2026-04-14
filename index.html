@@ -6,45 +6,22 @@
     <script src="https://cjrtnc.leaningtech.com/2.0/loader.js"></script>
     <style>
         body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
-        #game-container { width: 100vw; height: 100vh; position: relative; }
-        #status { position: absolute; text-align: center; z-index: 100; background: rgba(0,0,0,0.9); padding: 25px; border-radius: 15px; border: 1px solid #444; }
+        #game-container { width: 100vw; height: 100vh; }
     </style>
 </head>
 <body>
-    <div id="status">
-        <h3>Cargando Memorama...</h3>
-        <p id="msg">Sincronizando archivos del juego...</p>
-    </div>
     <div id="game-container"></div>
-
     <script>
-        window.onload = async function() {
-            // 1. Inicializar motor
-            await cheerpjInit();
+        window.onload = function() {
+            cheerpjInit();
             cheerpjCreateDisplay(1370, 720);
             
-            console.log("Motor listo. Montando sistema de archivos...");
+            // Si el JAR ya bajó (como vimos en tu captura), 
+            // solo necesitamos apuntar a la clase EXACTA.
+            // Probaremos la ruta completa del paquete:
             
-            // 2. Definimos las rutas exactas
-            const repoPath = "/AventuraAprendizaje/";
-            const jarFile = "JuegoMemorama.jar";
-            const libFile = "lib/AbsoluteLayout.jar";
-
-            // 3. EJECUCIÓN ESPECIAL:
-            // Usamos una ruta que CheerpJ entiende como "raíz del servidor"
-            // Esto evita que el motor agregue el molesto ".js" al final
-            document.getElementById("msg").innerText = "Abriendo ventana INICIO...";
-            
-            cheerpjRunMain(
-                "juegomemorama.INICIO", 
-                "/app" + repoPath + jarFile, 
-                "/app" + repoPath + libFile
-            );
-
-            // Ocultar el mensaje tras la carga
-            setTimeout(() => {
-                document.getElementById("status").style.display = "none";
-            }, 10000);
+            console.log("Iniciando clase principal...");
+            cheerpjRunMain("juegomemorama.INICIO", "/app/AventuraAprendizaje/JuegoMemorama.jar", "/app/AventuraAprendizaje/lib/AbsoluteLayout.jar");
         };
     </script>
 </body>
