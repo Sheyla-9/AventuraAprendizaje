@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Aventura de Aprendizaje</title>
-    <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
+   <script src="https://cjrtnc.leaningtech.com/3.0/loader.js" defer></script>
     <style>
         body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
         #game-container { width: 100vw; height: 100vh; position: relative; }
@@ -20,16 +20,23 @@
     <script>
         // Función principal autoejecutable
         (async function() {
-            try {
-                console.log("Esperando a CheerpJ...");
-                
-                // Espera activa hasta que la librería esté en memoria
-                while (typeof cheerpjInit === 'undefined') {
-                    await new Promise(r => setTimeout(r, 500));
-                }
+    try {
+        console.log("Esperando a CheerpJ...");
+        
+        // Si después de 3 segundos no despierta, lo llamamos con fuerza
+        const timeout = setTimeout(() => {
+            console.log("El motor tarda en despertar, reintentando...");
+            const s = document.createElement('script');
+            s.src = "https://cjrtnc.leaningtech.com/3.0/loader.js";
+            document.head.appendChild(s);
+        }, 3000);
 
-                console.log("Motor encontrado. Inicializando...");
-                document.getElementById("msg").innerText = "Motor listo. Descargando juego...";
+        while (typeof cheerpjInit === 'undefined') {
+            await new Promise(r => setTimeout(r, 500));
+        }
+        
+        clearTimeout(timeout); // Si despertó, cancelamos el reintento
+        console.log("Motor encontrado. Inicializando...");
 
                 // 1. Inicializar
                 await cheerpjInit();
