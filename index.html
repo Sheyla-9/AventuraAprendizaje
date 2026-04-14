@@ -59,36 +59,31 @@
 
     <div id="game-container"></div>
 
-    <script>
-        window.onload = function() {
-            console.log("Iniciando secuencia de arranque...");
-            
-            // 1. Inicializar el motor gráfico
-            cheerpjInit();
-            cheerpjCreateDisplay(1370, 720);
-            
-            // 2. Definir las rutas de tus archivos
-            // Usamos la carpeta del repositorio AventuraAprendizaje
-            const jarPath = "/app/AventuraAprendizaje/JuegoMemorama.jar";
-            const libPath = "/app/AventuraAprendizaje/lib/AbsoluteLayout.jar";
-            
-            console.log("Ruta del JAR: " + jarPath);
-            document.getElementById("detalle").innerText = "Cargando clase juegomemorama.INICIO...";
+   <script>
+    window.onload = function() {
+        console.log("Iniciando secuencia de arranque...");
+        
+        // 1. Inicializar el motor
+        cheerpjInit();
+        cheerpjCreateDisplay(1370, 720);
+        
+        // 2. Rutas corregidas
+        // IMPORTANTE: Eliminamos cualquier ambigüedad de nombres
+        const jarPath = "/app/AventuraAprendizaje/JuegoMemorama.jar";
+        const libPath = "/app/AventuraAprendizaje/lib/AbsoluteLayout.jar";
+        
+        console.log("Cargando JAR desde: " + jarPath);
 
-            // 3. Ejecutar la clase principal que vimos en WinRAR
-            // Nota: El orden es (ClasePrincipal, ArchivoJAR, ArchivoLib)
-            cheerpjRunMain("juegomemorama.INICIO", jarPath, libPath);
-            
-            // 4. Ocultar el mensaje después de que el motor cargue
-            // Le damos 12 segundos para asegurar que se dibujen las imágenes
-            setTimeout(() => {
-                const statusDiv = document.getElementById("status");
-                statusDiv.style.transition = "opacity 1s";
-                statusDiv.style.opacity = "0";
-                setTimeout(() => statusDiv.style.display = "none", 1000);
-                console.log("Secuencia de carga finalizada.");
-            }, 12000);
-        };
-    </script>
+        // 3. Ejecución directa de la clase principal que confirmamos en WinRAR
+        // Usamos RunMain porque es más preciso que RunJar para proyectos de NetBeans
+        cheerpjRunMain("juegomemorama.INICIO", jarPath, libPath);
+        
+        // Ocultar mensaje de carga
+        setTimeout(() => {
+            const statusDiv = document.getElementById("status");
+            if(statusDiv) statusDiv.style.display = "none";
+        }, 15000); // Damos 15 segundos por la conexión de Campeche
+    };
+</script>
 </body>
 </html>
