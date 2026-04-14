@@ -7,52 +7,50 @@
     <style>
         body { margin: 0; background-color: #222; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; overflow: hidden; }
         #game-container { width: 100vw; height: 100vh; position: relative; }
-        #status { position: absolute; text-align: center; z-index: 100; padding: 20px; background: rgba(0,0,0,0.7); border-radius: 10px; }
+        #status { position: absolute; text-align: center; z-index: 100; padding: 20px; background: rgba(0,0,0,0.8); border-radius: 10px; border: 1px solid #444; }
     </style>
 </head>
 <body>
     <div id="status">
-        <h3 id="msg-titulo">Iniciando Memorama...</h3>
-        <p id="msg-detalle">Cargando motor de Java oficial...</p>
+        <h3>Iniciando Memorama...</h3>
+        <p id="msg">Cargando motor de Java...</p>
     </div>
     <div id="game-container"></div>
 
     <script>
-        // Función de arranque con reintento automático
-        async function arrancarMotor() {
+        // Función principal autoejecutable
+        (async function() {
             try {
-                console.log("Paso 1: Iniciando carga...");
+                console.log("Esperando a CheerpJ...");
                 
-                // Si la librería falló por certificado, esto la reintenta una vez
-                if (typeof cheerpjInit === 'undefined') {
-                    console.log("Reintentando conexión...");
-                    await new Promise(r => setTimeout(r, 1000));
-                    if (typeof cheerpjInit === 'undefined') {
-                        document.getElementById("msg-detalle").innerText = "El motor está tardando en responder. Espera un momento...";
-                        return;
-                    }
+                // Espera activa hasta que la librería esté en memoria
+                while (typeof cheerpjInit === 'undefined') {
+                    await new Promise(r => setTimeout(r, 500));
                 }
 
-                // Inicializar
+                console.log("Motor encontrado. Inicializando...");
+                document.getElementById("msg").innerText = "Motor listo. Descargando juego...";
+
+                // 1. Inicializar
                 await cheerpjInit();
-                console.log("Paso 2: Motor listo.");
                 cheerpjCreateDisplay(1370, 720);
                 
+                // 2. Ejecutar JAR (Rutas completas)
                 const jar = "https://sheyla-9.github.io/AventuraAprendizaje/JuegoMemorama.jar";
                 const lib = "https://sheyla-9.github.io/AventuraAprendizaje/lib/AbsoluteLayout.jar";
                 
+                console.log("Llamando al archivo JAR...");
                 await cheerpjRunJar(jar, lib);
                 
+                // 3. Finalizar
                 document.getElementById("status").style.display = "none";
-                console.log("Paso 3: ¡Juego en pantalla!");
+                console.log("¡Proceso completado!");
 
             } catch (err) {
-                console.error("Error en motor:", err);
+                console.error("Error en el arranque:", err);
+                document.getElementById("msg").innerText = "Error al iniciar. Revisa la consola (F12).";
             }
-        }
-
-        // Ejecutar al cargar la ventana
-        window.onload = arrancarMotor;
+        })();
     </script>
 </body>
 </html>
